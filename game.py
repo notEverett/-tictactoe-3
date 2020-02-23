@@ -16,37 +16,55 @@ pygame.display.set_caption('(tictactoe)^3')
 
 clock = pygame.time.Clock()
 
-done = False
-
 grid = np.array([[[[0 for x in range(0,3)] for y in range(0,3)]\
     for X in range(0,3)] for Y in range(0,3)])
 
+# Dimensions of each individual box + margin in between them
 h = 50
 w = 50
 m = 10
-def sub_table(x_i, y_i):
-    for x in range(0,3):
-        for y in range(0,3):
-            pygame.draw.rect(screen, color, [x_i+(m+w)*x,y_i+(m+h)*y, w, h])
 
+turn = 0
+done = False
 while not done:
     # Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN:
-            (a, b) = pygame.mouse.get_pos()
-            C = (X, Y) = (a//180, b//180)
-            c = (x, y) = (a//60 - 3*X, b//60 - 3*Y)
-            print(f'{C}\n{c}\n')
+            (a, b) = pygame.mouse.get_pos() # Screen coordinates
+            X = a//180
+            Y = b//180
+            x = a//60 - 3*X
+            y = b//60 - 3*Y
+            if turn%2==0:
+                grid[X][Y][x][y] = 1
+                turn += 1
+            else:
+                grid[X][Y][x][y] = 2
+                turn += 1
+
+            C = (X,Y)
+            c = (x,y)
+
+            print(f'{C}\n{c}')
+
     # Game Logic:
+
 
     # Drawing Code:
     screen.fill(black)
     # Drawing individual boxes
-    for X in range(0,361,180):
-        for Y in range(0,361,180):
-            sub_table(X, Y)
+    for X in range(0,3):
+        for Y in range(0,3):
+            for x in range(0,3):
+                for y in range(0,3):
+                    color = white
+                    if grid[X][Y][x][y] == 1:
+                        color = blue
+                    if grid[X][Y][x][y] == 2:
+                        color = red
+                    pygame.draw.rect(screen, color, [X*180+(m+w)*x, Y*180+(m+h)*y, w, h])
 
     pygame.display.flip() # Displays drawing code on screen
 
